@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
-''' Impression des adresses IP.
+''' Impression et stockage des adresses IP.
 
     Script maintenu par Mickaël Schoentgen <mickael@jmsinfo.co>.
     Python 3.
-    Dépendances :
-        python3-serial
-
-    usermod -G dialout -a jmsinfo
 '''
+
+from configparser import Error, NoOptionError, SafeConfigParser
 
 # Imports relatifs au projet Hermès
 from thermalprinter import CodePage, ThermalPrinter
@@ -33,6 +31,10 @@ __copyright__ = '''
 def main(args):
     ''' . '''
 
+    fo_ip = '/opt/hermes/stats/ip.ini'
+    ini = SafeConfigParser()
+    ini.read(fo_ip)
+
     with ThermalPrinter() as printer:
         printer.fo_stats = None
         if not printer.status()['paper']:
@@ -42,10 +44,14 @@ def main(args):
         for arg in args:
             arg = arg.replace('|', ' ').strip()
             if arg:
+                iface, ip = arg.split(' ')
+                ini.set(iface.lower(), 'ip', ip)
                 printer.write(arg.encode('latin-1'))
                 printer.feed()
         printer.justify()
         printer.feed(3)
+
+        ini.write(open(fo_ip, 'w'))
 
     return 1
 

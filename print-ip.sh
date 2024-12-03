@@ -3,7 +3,7 @@
 
 ip() {
         local iface=$1
-	local lan=$(/sbin/ifconfig $iface | grep inet | cut -d':' -f2 | cut -d' ' -f1)
+	local lan=$(/bin/ip addr show $iface | grep 'inet ' | cut -d'/' -f1 | cut -d' ' -f6)
 
 	[ ! -z "$lan" ] && echo "$iface|$lan"
 }

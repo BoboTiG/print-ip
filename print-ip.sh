@@ -9,7 +9,7 @@ ip() {
 }
 
 wan() {
-	local wan=$(/usr/bin/dig +short myip.opendns.com @resolver1.opendns.com)
+	local wan=$(/usr/bin/dig -4 +short myip.opendns.com @resolver1.opendns.com)
 	[ ! -z "$wan" ] && echo "WAN|$wan"
 }
 
